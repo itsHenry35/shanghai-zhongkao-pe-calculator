@@ -1,0 +1,51 @@
+.shadow-card {
+    transition: all 0.3s;
+  }
+  
+  .shadow-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  }
+  
+  @media (max-width: 767px) {
+    .mobile-container {
+        padding: 5px !important;
+        max-width: 100% !important;
+        overflow-x: hidden;
+      }
+      
+      /* 调整卡片和表格的内边距，让内容区域更宽 */
+      .ant-card-body {
+        padding: 12px 8px !important;
+      }
+      
+      /* 确保表格能完整显示 */
+      .mobile-table {
+        width: 100% !important;
+      }
+      
+      /* 减少表格单元格内边距 */
+      .ant-table.ant-table-small .ant-table-thead > tr > th,
+      .ant-table.ant-table-small .ant-table-tbody > tr > td {
+        padding: 6px 4px !important;
+      }
+      
+      /* 优化折叠面板 */
+      .ant-collapse-header {
+        padding: 8px 12px !important;
+      }
+      
+      /* 统计数字区域优化 */
+      .mobile-stats .ant-card-body {
+        padding: 8px 4px !important;
+      }
+      
+      /* 确保表单项更紧凑 */
+      .ant-form-item {
+        margin-bottom: 12px !important;
+      }
+      
+      /* 让输入框和下拉框占满宽度 */
+      .ant-select, .ant-input-number, .ant-input-group-wrapper {
+        width: 100% !important;
+      }
+  }
