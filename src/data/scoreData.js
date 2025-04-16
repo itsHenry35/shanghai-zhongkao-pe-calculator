@@ -930,7 +930,7 @@ export const getScoreByPerformance = (gender, category, eventName, performance) 
         }
         
         // 如果找不到匹配的分数，返回最低分
-        return { score: 5, bonus: 0 };
+        return { score: 0, bonus: 0 };
       }
       
       return { score: 0, bonus: 0 };
