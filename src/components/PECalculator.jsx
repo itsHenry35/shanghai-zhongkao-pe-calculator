@@ -18,7 +18,8 @@ import {
   getScoreByPerformance,
   calculateWeightedScore,
   calculateFinalScore,
-  getCategoryEvents
+  getCategoryEvents,
+  roundTo25
 } from '../data/scoreData';
 import {
   TrophyOutlined,
@@ -55,10 +56,10 @@ const PECalculator = () => {
     category4: ''
   });
   const [calculatedScores, setCalculatedScores] = useState({
-    category1: { raw: 0, weighted: 0, bonus: 0 },
-    category2: { raw: 0, weighted: 0, bonus: 0 },
-    category3: { raw: 0, weighted: 0, bonus: 0 },
-    category4: { raw: 0, weighted: 0, bonus: 0 },
+    category1: { raw: 0, weighted: 0, bonus: 0, rounded: 0 },
+    category2: { raw: 0, weighted: 0, bonus: 0, rounded: 0 },
+    category3: { raw: 0, weighted: 0, bonus: 0, rounded: 0 },
+    category4: { raw: 0, weighted: 0, bonus: 0, rounded: 0 },
     total: { raw: 0, final: 0 }
   });
   const [calculated, setCalculated] = useState(false);
@@ -159,41 +160,47 @@ const PECalculator = () => {
     const category3WeightedScore = calculateWeightedScore(category3Result.score, 'category3');
     const category4WeightedScore = calculateWeightedScore(category4Result.score, 'category4');
     
-    // 计算最终分数
-    const weightedScores = [
-      category1WeightedScore + category1Result.bonus,
-      category2WeightedScore,
-      category3WeightedScore,
-      category4WeightedScore
-    ];
+    // 计算各项的加权分数并加上额外加分
+    const category1FinalWeighted = category1WeightedScore + category1Result.bonus;
     
-    const rawTotal = weightedScores.reduce((sum, score) => sum + score, 0);
-    const finalScore = calculateFinalScore(weightedScores);
+    // 对每个类别分数分别进行0.25进制处理
+    const category1Rounded = roundTo25(category1FinalWeighted);
+    const category2Rounded = roundTo25(category2WeightedScore);
+    const category3Rounded = roundTo25(category3WeightedScore);
+    const category4Rounded = roundTo25(category4WeightedScore);
+    
+    // 计算最终分数 - 四项舍入后的分数相加
+    const finalScore = calculateFinalScore (category1Rounded + category2Rounded + category3Rounded + category4Rounded);
+    const rawTotal = category1FinalWeighted + category2WeightedScore + category3WeightedScore + category4WeightedScore;
     
     setCalculatedScores({
       category1: { 
         raw: category1Result.score, 
         weighted: category1WeightedScore, 
-        bonus: category1Result.bonus 
+        bonus: category1Result.bonus,
+        rounded: category1Rounded
       },
       category2: { 
         raw: category2Result.score, 
         weighted: category2WeightedScore,
-        bonus: 0
+        bonus: 0,
+        rounded: category2Rounded
       },
       category3: { 
         raw: category3Result.score, 
         weighted: category3WeightedScore,
-        bonus: 0
+        bonus: 0,
+        rounded: category3Rounded
       },
       category4: { 
         raw: category4Result.score, 
         weighted: category4WeightedScore,
-        bonus: 0
+        bonus: 0,
+        rounded: category4Rounded
       },
       total: { 
         raw: rawTotal, 
-        final: finalScore 
+        final: finalScore
       }
     });
     
@@ -305,7 +312,7 @@ const PECalculator = () => {
       weight: '0.06',
       weightedScore: calculatedScores.category1.weighted.toFixed(2),
       bonus: calculatedScores.category1.bonus.toFixed(2),
-      finalScore: (calculatedScores.category1.weighted + calculatedScores.category1.bonus).toFixed(2)
+      finalScore: (calculatedScores.category1.rounded).toFixed(2)
     },
     {
       key: '2',
@@ -315,7 +322,7 @@ const PECalculator = () => {
       weight: '0.03',
       weightedScore: calculatedScores.category2.weighted.toFixed(2),
       bonus: calculatedScores.category2.bonus.toFixed(2),
-      finalScore: (calculatedScores.category2.weighted + calculatedScores.category2.bonus).toFixed(2)
+      finalScore: (calculatedScores.category2.rounded).toFixed(2)
     },
     {
       key: '3',
@@ -325,7 +332,7 @@ const PECalculator = () => {
       weight: '0.03',
       weightedScore: calculatedScores.category3.weighted.toFixed(2),
       bonus: calculatedScores.category3.bonus.toFixed(2),
-      finalScore: (calculatedScores.category3.weighted + calculatedScores.category3.bonus).toFixed(2)
+      finalScore: (calculatedScores.category3.rounded).toFixed(2)
     },
     {
       key: '4',
@@ -335,7 +342,7 @@ const PECalculator = () => {
       weight: '0.03',
       weightedScore: calculatedScores.category4.weighted.toFixed(2),
       bonus: calculatedScores.category4.bonus.toFixed(2),
-      finalScore: (calculatedScores.category4.weighted + calculatedScores.category4.bonus).toFixed(2)
+      finalScore: (calculatedScores.category4.rounded).toFixed(2)
     }
   ] : [];
 

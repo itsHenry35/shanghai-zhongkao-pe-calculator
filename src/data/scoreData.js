@@ -963,44 +963,41 @@ export const calculateWeightedScore = (rawScore, category) => {
   return rawScore * weights[category];
 };
 
-// 计算最终分数
-export const calculateFinalScore = (scores) => {
-    // 计算原始总分
-    const rawTotal = scores.reduce((sum, score) => sum + score, 0);
+// 按0.25进制进行单项分数进位或退位
+export const roundTo25 = (score) => {
+  // 获取整数部分
+  const integerPart = Math.floor(score);
+  // 获取小数部分
+  const decimalPart = score - integerPart;
+  
+  // 应用0.25进制规则
+  let finalDecimal;
+  if (decimalPart < 0.25) {
+    finalDecimal = 0;
+  } else if (decimalPart >= 0.25 && decimalPart <= 0.5) {
+    finalDecimal = 0.5;
+  } else if (decimalPart > 0.5 && decimalPart < 0.75) {
+    finalDecimal = 0.5;
+  } else {  // decimalPart >= 0.75
+    finalDecimal = 1;
+  }
+  
+  // 如果小数部分进位为1，可能需要增加整数部分
+  if (finalDecimal === 1) {
+    return integerPart + 1;
+  } else {
+    return integerPart + finalDecimal;
+  }
+};
 
-    if (rawTotal >= 15) {
+// 计算最终分数
+export const calculateFinalScore = (score) => {
+
+    if (score >= 15) {
         return 15; // 如果总分大于等于15，直接返回15
     }
-    
-    // 按0.25进制进行进位或退位
-    // 14-14.24分 → 14分
-    // 14.25-14.5分 → 14.5分
-    // 14.5-14.74分 → 14.5分
-    // 14.75-15分 → 15分
-    
-    // 获取整数部分
-    const integerPart = Math.floor(rawTotal);
-    // 获取小数部分
-    const decimalPart = rawTotal - integerPart;
-    
-    // 应用0.25进制规则
-    let finalDecimal;
-    if (decimalPart < 0.25) {
-      finalDecimal = 0;
-    } else if (decimalPart >= 0.25 && decimalPart <= 0.5) {
-      finalDecimal = 0.5;
-    } else if (decimalPart > 0.5 && decimalPart < 0.75) {
-      finalDecimal = 0.5;
-    } else {  // decimalPart >= 0.75
-      finalDecimal = 1;
-    }
-    
-    // 如果小数部分进位为1，可能需要增加整数部分
-    if (finalDecimal === 1) {
-      return integerPart + 1;
-    } else {
-      return integerPart + finalDecimal;
-    }
+
+    return score
   };
 
 export const getCategoryEvents = (gender, category) => {
